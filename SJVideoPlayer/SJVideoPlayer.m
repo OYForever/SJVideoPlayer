@@ -168,7 +168,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// 点击了返回按钮
 ///
 - (void)_backButtonWasTapped {
-    if ( self.isFullscreen && ![self _whetherToSupportOnlyOneOrientation] ) {
+    if ( self.isFullscreen && !self.isFitOnScreen && ![self _whetherToSupportOnlyOneOrientation] ) {
         [self rotate];
     }
     else if ( self.isFitOnScreen ) {

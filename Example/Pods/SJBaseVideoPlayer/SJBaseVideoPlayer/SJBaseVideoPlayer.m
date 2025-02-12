@@ -1836,8 +1836,6 @@ typedef struct _SJPlayerControlInfo {
     [self setFitOnScreen:fitOnScreen animated:animated completionHandler:nil];
 }
 - (void)setFitOnScreen:(BOOL)fitOnScreen animated:(BOOL)animated completionHandler:(nullable void(^)(__kindof SJBaseVideoPlayer *player))completionHandler {
-    NSAssert(!self.isFullscreen, @"横屏全屏状态下, 无法执行竖屏全屏!");
-    
     __weak typeof(self) _self = self;
     [self.fitOnScreenManager setFitOnScreen:fitOnScreen animated:animated completionHandler:^(id<SJFitOnScreenManager> mgr) {
         __strong typeof(_self) self = _self;
@@ -1910,7 +1908,7 @@ typedef struct _SJPlayerControlInfo {
 }
 
 - (BOOL)isFullscreen {
-    return _rotationManager.isFullscreen;
+    return _rotationManager.isFullscreen || self.isFitOnScreen;
 }
 
 - (UIInterfaceOrientation)currentOrientation {

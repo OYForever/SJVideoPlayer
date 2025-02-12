@@ -144,6 +144,11 @@
         return;
     }
     
+    if (_needsFitOnScreenFirst && _videoPlayer.isFitOnScreen) {
+        [_videoPlayer setFitOnScreen:NO];
+        return;
+    }
+    
     [_videoPlayer rotate];
 }
 
