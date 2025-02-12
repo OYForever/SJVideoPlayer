@@ -24,21 +24,27 @@ NS_ASSUME_NONNULL_BEGIN
 
 FOUNDATION_STATIC_INLINE BOOL
 _isIPhoneXSeries(void) {
-    if (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
-        if ( @available(iOS 13.0, *) ) {
-            for ( UIScene *scene in UIApplication.sharedApplication.connectedScenes ) {
-                if ( [scene isKindOfClass:UIWindowScene.class] ) {
-                    UIWindow *window = [(UIWindowScene *)scene windows].firstObject;
-                    if ( window.isKeyWindow ) return window.safeAreaInsets.bottom > 0.0;
-                }
+    if (UIDevice.currentDevice.userInterfaceIdiom != UIUserInterfaceIdiomPhone) {
+            return NO;
+        }
+        
+        // iOS 13 及以上使用 Scene
+        if (@available(iOS 13.0, *)) {
+            UIScene *scene = UIApplication.sharedApplication.connectedScenes.anyObject;
+            if ([scene isKindOfClass:[UIWindowScene class]]) {
+                UIWindowScene *windowScene = (UIWindowScene *)scene;
+                UIWindow *window = windowScene.windows.firstObject;
+                return window.safeAreaInsets.bottom > 0.0;
             }
         }
-        if ( @available(iOS 11.0, *) ) {
-            UIWindow *window = [UIApplication sharedApplication].delegate.window;
+        
+        // iOS 11 到 iOS 12 使用传统方式
+        if (@available(iOS 11.0, *)) {
+            UIWindow *window = UIApplication.sharedApplication.windows.firstObject;
             return window.safeAreaInsets.bottom > 0.0;
         }
-    }
-    return NO;
+        
+        return NO;
 }
 
 @interface SJEdgeControlLayerAdapters ()
