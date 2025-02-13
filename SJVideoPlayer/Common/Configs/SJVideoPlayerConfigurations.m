@@ -75,7 +75,7 @@ NSNotificationName const SJVideoPlayerConfigurationsDidUpdateNotification = @"SJ
 @property (nonatomic, strong, nullable) UIColor *bottomIndicatorTrackColor;         // 底部指示条轨道颜色
 @property (nonatomic, strong, nullable) UIColor *bottomIndicatorTraceColor;         // 底部指示条轨迹颜色
 @property (nonatomic)                   float    bottomIndicatorHeight;             // 底部指示条高度
-    
+
 // right adapter items
 @property (nonatomic, strong, nullable) UIImage *clipsImage;
 
@@ -131,32 +131,32 @@ NSNotificationName const SJVideoPlayerConfigurationsDidUpdateNotification = @"SJ
         _pictureInPictureItemStartImage = [[AVPictureInPictureController.pictureInPictureButtonStartImage imageWithTintColor:UIColor.whiteColor] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         _pictureInPictureItemStopImage = [[AVPictureInPictureController.pictureInPictureButtonStopImage imageWithTintColor:UIColor.whiteColor] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     }
-
+    
     _speedupPlaybackTriangleColor = UIColor.whiteColor;
     _speedupPlaybackRateTextColor = UIColor.whiteColor;
     _speedupPlaybackRateTextFont = [UIFont boldSystemFontOfSize:12];
     _speedupPlaybackTextColor = UIColor.whiteColor;
     _speedupPlaybackTextFont = [UIFont boldSystemFontOfSize:12];
-  
+    
     _loadingNetworkSpeedTextColor = UIColor.whiteColor;
     _loadingNetworkSpeedTextFont = [UIFont systemFontOfSize:11];
     _loadingLineColor = UIColor.whiteColor;
- 
+    
     _fastImage = [SJVideoPlayerResourceLoader imageNamed:@"sj_video_player_fast"];
     _forwardImage = [SJVideoPlayerResourceLoader imageNamed:@"sj_video_player_forward"];
-
+    
     _batteryBorderImage = [SJVideoPlayerResourceLoader imageNamed:@"battery_border"];
     _batteryNubImage = [SJVideoPlayerResourceLoader imageNamed:@"battery_nub"];
     _batteryLightningImage = [SJVideoPlayerResourceLoader imageNamed:@"battery_lightning"];
- 
+    
     _backImage = [SJVideoPlayerResourceLoader imageNamed:@"sj_video_player_back"];
     _moreImage = [SJVideoPlayerResourceLoader imageNamed:@"sj_video_player_more"];
     _titleLabelFont = [UIFont boldSystemFontOfSize:14];
     _titleLabelColor = [UIColor whiteColor];
-
+    
     _lockImage = [SJVideoPlayerResourceLoader imageNamed:@"sj_video_player_lock"];
     _unlockImage = [SJVideoPlayerResourceLoader imageNamed:@"sj_video_player_unlock"];
-
+    
     _pauseImage = [SJVideoPlayerResourceLoader imageNamed:@"sj_video_player_pause"];
     _playImage = [SJVideoPlayerResourceLoader imageNamed:@"sj_video_player_play"];
     _timeLabelFont = [UIFont systemFontOfSize:11];
@@ -164,7 +164,7 @@ NSNotificationName const SJVideoPlayerConfigurationsDidUpdateNotification = @"SJ
     
     _smallScreenImage = [SJVideoPlayerResourceLoader imageNamed:@"sj_video_player_shrinkscreen"];
     _fullscreenImage = [SJVideoPlayerResourceLoader imageNamed:@"sj_video_player_fullscreen"];
-
+    
     _progressTrackColor =  [UIColor whiteColor];
     _progressTrackHeight = 3;
     _progressTraceColor = [UIColor colorWithRed:2 / 256.0 green:141 / 256.0 blue:140 / 256.0 alpha:1];
@@ -174,9 +174,9 @@ NSNotificationName const SJVideoPlayerConfigurationsDidUpdateNotification = @"SJ
     _bottomIndicatorTrackColor = _progressTrackColor;
     _bottomIndicatorTraceColor = _progressTraceColor;
     _bottomIndicatorHeight = 1;
-
+    
     _clipsImage = [SJVideoPlayerResourceLoader imageNamed:@"sj_video_player_clips"];
-
+    
     _replayTitleColor = [UIColor whiteColor];
     _replayTitleFont = [UIFont boldSystemFontOfSize:12];
     _replayImage = [SJVideoPlayerResourceLoader imageNamed:@"sj_video_player_replay"];
@@ -213,7 +213,7 @@ NSNotificationName const SJVideoPlayerConfigurationsDidUpdateNotification = @"SJ
     _screenshotImage = [SJVideoPlayerResourceLoader imageNamed:@"screenshot"];
     _videoClipImage = [SJVideoPlayerResourceLoader imageNamed:@"video_clip"];
     _GIFClipImage = [SJVideoPlayerResourceLoader imageNamed:@"gif_clip"];
-
+    
     _recordsPreparingImage = [SJVideoPlayerResourceLoader imageNamed:@"records_preparing"];
     _recordsToFinishRecordingImage = [SJVideoPlayerResourceLoader imageNamed:@"records_finish"];
 }
@@ -221,10 +221,11 @@ NSNotificationName const SJVideoPlayerConfigurationsDidUpdateNotification = @"SJ
 
 
 @interface SJVideoPlayerLocalizedStrings : NSObject<SJVideoPlayerLocalizedStrings>
-- (void)setFromBundle:(NSBundle *)bundle;
+
+@property (nonatomic, strong, nullable, readonly) NSBundle *bundle;
 
 @property (nonatomic, copy, nullable) NSString *longPressSpeedupPlayback;
- 
+
 @property (nonatomic, copy, nullable) NSString *noNetWork;
 @property (nonatomic, copy, nullable) NSString *WiFiNetwork;
 @property (nonatomic, copy, nullable) NSString *cellularNetwork;
@@ -265,12 +266,24 @@ NSNotificationName const SJVideoPlayerConfigurationsDidUpdateNotification = @"SJ
 @property (nonatomic, copy, nullable) NSString *definitionSwitchFailedPrompt;
 @end
 
-@implementation SJVideoPlayerLocalizedStrings {
-    NSBundle *_bundle;
-}
-  
+@implementation SJVideoPlayerLocalizedStrings
+
 - (void)setFromBundle:(NSBundle *)bundle {
+    [self setFromBundle:(NSBundle *)bundle language:nil];
+}
+
+- (void)setFromBundle:(NSBundle *)bundle language:(nullable NSString *)language {
+    if (!bundle) return;
+    
+    if (language.length > 0) {
+        NSString *languagePath = [bundle pathForResource:language ofType:@"lproj"];
+        if (languagePath) {
+            bundle = [NSBundle bundleWithPath:languagePath];
+        }
+    }
+    
     _bundle = bundle;
+    
     _longPressSpeedupPlayback = [self localizedStringForKey:SJVideoPlayerLocalizedStringKeyLongPressSpeedupPlayback];
     _noNetWork = [self localizedStringForKey:SJVideoPlayerLocalizedStringKeyNoNetwork];
     _WiFiNetwork = [self localizedStringForKey:SJVideoPlayerLocalizedStringKeyWiFiNetWork];
@@ -304,10 +317,17 @@ NSNotificationName const SJVideoPlayerConfigurationsDidUpdateNotification = @"SJ
 }
 
 - (nullable NSString *)localizedStringForKey:(NSString *)key {
-    NSBundle *mainBundle = NSBundle.mainBundle;
-    NSString *value = _bundle != mainBundle ? [_bundle localizedStringForKey:key value:nil table:nil] : nil;
-    return [mainBundle localizedStringForKey:key value:value table:nil];
+    if (!key) return nil;
+    
+    NSBundle *mainBundle = [NSBundle mainBundle];
+    if (!_bundle || _bundle == mainBundle) {
+        return [mainBundle localizedStringForKey:key value:nil table:nil];
+    }
+    
+    // 直接返回自定义 bundle 的本地化字符串
+    return [_bundle localizedStringForKey:key value:nil table:nil] ?: [mainBundle localizedStringForKey:key value:nil table:nil];
 }
+
 @end
 
 
@@ -318,7 +338,7 @@ NSNotificationName const SJVideoPlayerConfigurationsDidUpdateNotification = @"SJ
 @end
 
 @implementation SJVideoPlayerConfigurations
-  
+
 + (instancetype)shared {
     static id _instance;
     static dispatch_once_t onceToken;
@@ -349,7 +369,7 @@ NSNotificationName const SJVideoPlayerConfigurationsDidUpdateNotification = @"SJ
             });
         });
     };
-} 
+}
 
 - (id<SJVideoPlayerLocalizedStrings>)localizedStrings {
     if ( _localizedStrings == nil ) {

@@ -156,6 +156,7 @@ UIKIT_EXTERN NSNotificationName const SJVideoPlayerConfigurationsDidUpdateNotifi
 @protocol SJVideoPlayerLocalizedStrings <NSObject>
 
 - (void)setFromBundle:(NSBundle *)bundle;
+- (void)setFromBundle:(NSBundle *)bundle language:(nullable NSString *)language;
 
 @property (nonatomic, copy, nullable) NSString *longPressSpeedupPlayback;
  
